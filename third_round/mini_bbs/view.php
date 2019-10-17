@@ -1,6 +1,7 @@
 <?php
 session_start();
 require('dbconnect.php');
+require('htmlspecialchars.php');
 
 if (empty($_REQUEST['id'])) {
   header('Location: index.php');
@@ -10,11 +11,6 @@ if (empty($_REQUEST['id'])) {
 $posts = $db->prepare('SELECT m.name, m.picture, p.* FROM members m, posts p WHERE m.id=p.member_id AND p.id=? ORDER BY p.created DESC');
 $posts->execute(array($_REQUEST['id']));
 
-
-//htmlspecialcharsのショートカット
-function h($value) {
-  return htmlspecialchars($value, ENT_QUOTES);
-}
 ?>
 
 <!DOCTYPE html>

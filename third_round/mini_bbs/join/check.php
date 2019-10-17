@@ -1,6 +1,7 @@
 <?php
 session_start();
 require('../dbconnect.php');
+require('../htmlspecialchars.php');
 print_r($_SESSION);
 if (!isset($_SESSION['join'])) {
   header('Location: index.php');
@@ -22,10 +23,6 @@ if (!empty($_POST)) {
   exit();
 }
 
-//htmlspecialcharsのショートカット
-function h($value) {
-  return htmlspecialchars($value, ENT_QUOTES);
-}
 ?>
 
 <!DOCTYPE html>

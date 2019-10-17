@@ -1,5 +1,6 @@
 <?php
 require('../dbconnect.php');
+require('../htmlspecialchars.php');
 session_start();
 
 if (!empty($_POST)) {
@@ -56,10 +57,6 @@ if ($_REQUEST['action'] == 'rewrite') {  //「action」が「rewrite」だった
 	$error['rewrite'] = true; //ファイルのアップロードは再現できないためこの変数を利用
 }
 
-//htmlspecialcharsのショートカット
-function h($value) {
-  return htmlspecialchars($value, ENT_QUOTES);
-}
 ?>
 
 <!DOCTYPE html>

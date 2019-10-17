@@ -1,6 +1,7 @@
 <?php
 session_start();
 require('dbconnect.php');
+require('htmlspecialchars.php');
 
 if (isset($_SESSION['id'])) {
   $id = $_REQUEST['id'];
@@ -18,12 +19,6 @@ if (isset($_SESSION['id'])) {
 }
 
 header('Location: index.php');
-
-
-//htmlspecialcharsのショートカット
-function h($value) {
-  return htmlspecialchars($value, ENT_QUOTES);
-}
 ?>
 
 <!DOCTYPE html>

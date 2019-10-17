@@ -1,5 +1,6 @@
 <?php
 require('dbconnect.php');
+require('htmlspecialchars.php');
 session_start();
 
 if ($_COOKIE['email'] != '') {
@@ -39,10 +40,6 @@ if (!empty($_POST)) {
   }
 }
 
-//htmlspecialcharsのショートカット
-function h($value) {
-  return htmlspecialchars($value, ENT_QUOTES);
-}
 
 ?>
 

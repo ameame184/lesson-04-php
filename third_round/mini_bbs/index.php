@@ -43,7 +43,6 @@ $counts = $db->query('SELECT COUNT(*) AS cnt FROM posts');
 $cnt = $counts->fetch();
 $maxPage = ceil($cnt['cnt'] / 5);
 $page = min($page, $maxPage);
-print_r($page);
 
 $start = ($page - 1) * 5;
 
@@ -59,12 +58,6 @@ if (isset($_REQUEST['res'])) {
   $table = $response->fetch();
   $message = '@' . $table['name'] . ' ' . $table['message'];
 }
-
-// いいねボタン
-
-
-
-
 
 // 本文内にURLにリンクを設定します
 function makeLink($value) {
@@ -103,60 +96,82 @@ function makeLink($value) {
       </div>
     </form>
 
-    <?php
-    foreach($posts as $post):
-    ?>
+    <?php foreach($posts as $post): ?>
     <div class="msg">
       <img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>">
       <p><?php echo makeLink(h($post['message'])); ?><span class="name">(<?php echo h($post['name']); ?>)</span>[<a href="index.php?res=<?php echo h($post['id']); ?>">Re</a>]</p>
       <p class="day"><a href="view.php?id=<?php echo h($post['id']); ?>"><?php echo h($post['created']); ?></a>
-      <a class="heart" href="">&#9825;</a> <!-- いいね機能ハート -->
-      <span>数字</span>
-      <?php
-      if($post['reply_post_id'] > 0):
-      ?>
-      <a href="view.php?id=<?php echo h($post['reply_post_id']); ?>">返信元のメッセージ</a>
-      </p>
-      <?php
-      endif;
-      ?>
-      <?php
-      if($_SESSION['id'] == $post['member_id']):
-      ?>
-      [<a href="delete.php?id=<?php echo h($post['id']); ?>" style="color:#F33;">削除</a>]
-      <?php
-      endif;
-      ?>
-    </div>
-    <?php
-    endforeach; 
-    ?>
 
+
+<!----------------------- いいね機能start ------------------------->
+<?php //ログインユーザーがいいねしてるかチェックする
+  $_SESSION['login_id'] = $member['id']; // メンバーIDを$_SESSIONにセット
+  $user_id = $_SESSION['login_id']; // セッションのログインIDを$user_idの変数にセット
+	$post_id = $post['id']; // 投稿されたメッセージのIDをセット
+  
+	// いいねしているかチェック
+	$likes = $db->prepare('SELECT COUNT(*) AS cnt FROM likes WHERE liked_post_id=? AND clicked_member_id=?');
+	$likes->execute(array(
+		$post_id,
+		$user_id));
+	$like = $likes->fetch();
+	$like_cnt = $like['cnt'];
+?>
+
+<?php if (empty($like_cnt)) : ?>
+	<a href="like_insert.php?id=<?php echo h($post['id']); ?>">&#9825;</a>
+<?php elseif(!empty($like_cnt)) : ?>
+	<a href="like_delete.php?id=<?php echo h($post['id']); ?>">&#128151;</a>
+<?php endif; ?>
+      
+<?php 
+	// いいねの数カウント
+	$like_counts = $db->prepare('SELECT COUNT(*) AS cnt FROM likes WHERE liked_post_id=?');
+	$like_counts->execute(array($post['id']));
+	$like_cnt = $like_counts->fetch();
+	print($like_cnt['cnt']);
+?>
+<!----------------------- いいね機能end ------------------------->
+
+
+      <!-- 返信する機能 -->
+      <?php if($post['reply_post_id'] > 0): ?>
+        <a href="view.php?id=<?php echo h($post['reply_post_id']); ?>">返信元のメッセージ</a>
+      </p>
+      <?php endif; ?>
+      <?php if($_SESSION['id'] == $post['member_id']): ?>
+        [<a href="delete.php?id=<?php echo h($post['id']); ?>" style="color:#F33;">削除</a>]
+      <?php endif; ?>
+    </div> <!-- msg -->
+    <?php endforeach; ?> <!-- foreach($posts as $post): -->
+
+    <!-- ページング -->
     <ul class="paging">
-      <?php
-      if($page > 1) {
-      ?>
+      <?php if($page > 1): ?>
       <li><a href="index.php?page=<?php print($page - 1); ?>">前のページへ</a></li>
-      <?php
-      } else {
-      ?>
+      <?php else: ?>
       <li>前のページへ</li>
-      <?php
-      }
-      ?>
-      <?php
-      if($page < $maxPage){
-      ?>
+      <?php endif; ?>
+      <?php if($page < $maxPage): ?>
       <li><a href="index.php?page=<?php print($page + 1); ?>">次のページへ</a></li>
-      <?php
-      } else {
-      ?>
+      <?php else: ?>
       <li>次のページへ</li>
-      <?php
-      }
-      ?>
+      <?php endif;?>
     </ul>
-  </div>
-</div>
+    
+    <!-- <div class="msg">
+      <p><?php print_r($post); ?></p>
+      <p><?php print_r($member['id']); ?></p>
+      <p><?php print_r($_SESSION['login_id']); ?></p>
+      <p><?php print_r($user_id); ?></p>
+      <p><?php print_r($post_id); ?></p>
+      <p><?php print_r($like_cnt['cnt']); ?></p>
+      <p><?php print_r($likes); ?></p>
+      <p><?php print_r($like); ?></p>
+      <p><?php print_r($post['id']); ?></p>
+    </div> -->
+
+  </div> <!-- contents -->
+</div> <!-- wrap -->
 </body>
 </html>

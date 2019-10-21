@@ -18,10 +18,8 @@ if (!empty($_POST)) {
 		$error['password'] = 'blank';
 	}
 	$fileName = $_FILES['image']['name'];
-	print_r($fileName);
 	if (!empty($fileName)) {
 		$ext = substr($fileName, -3);
-		print_r($ext);
 		if ($ext != 'jpg' && $ext != 'gif') {
 			$error['image'] = 'type';
 		}
@@ -40,9 +38,7 @@ if (!empty($_POST)) {
 	if (empty($error)) {
 		// 画像をアップロードする
 		$image = date('YmdHis') . $_FILES['image']['name'];
-		print_r($image);
 		move_uploaded_file($_FILES['image']['tmp_name'], '../member_picture/' . $image);
-		print_r($_FILES);
 
 		$_SESSION['join'] = $_POST;
 		$_SESSION['join']['image'] = $image;

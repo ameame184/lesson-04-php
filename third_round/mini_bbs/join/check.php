@@ -19,7 +19,7 @@ if (!empty($_POST)) {
   ));
   unset($_SESSION['join']); //DBには登録したので重複を防ぐためセッション情報を削除
 
-  header('Location: index.php');
+  header('Location: thanks.php');
   exit();
 }
 

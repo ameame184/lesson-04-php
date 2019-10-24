@@ -103,7 +103,7 @@ function makeLink($value) {
       <p class="day"><a href="view.php?id=<?php echo h($post['id']); ?>"><?php echo h($post['created']); ?></a>
 
 
-<!----------------------- いいね機能start ------------------------->
+<!----------------------- いいね機能start ----------------------->
 <?php //ログインユーザーがいいねしてるかチェックする
   $_SESSION['login_id'] = $member['id']; // メンバーIDを$_SESSIONにセット
   $user_id = $_SESSION['login_id']; // セッションのログインIDを$user_idの変数にセット
@@ -131,7 +131,7 @@ function makeLink($value) {
 	$like_cnt = $like_counts->fetch();
 	print($like_cnt['cnt']);
 ?>
-<!----------------------- いいね機能end ------------------------->
+<!----------------------- いいね機能end ----------------------->
 
 
       <!-- 返信する機能 -->
